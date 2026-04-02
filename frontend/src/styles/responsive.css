@@ -1,0 +1,50 @@
+/* Mobile Responsive Styles */
+@media (max-width: 992px) {
+  .admin-sidebar {
+    width: 200px;
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-layout {
+    flex-direction: column;
+  }
+  
+  .admin-sidebar {
+    width: 100%;
+    padding: 1rem;
+  }
+  
+  .navbar-container {
+    padding: 0 1rem;
+  }
+  
+  .hero-section {
+    padding: 3rem 1rem;
+  }
+  
+  .product-grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
+  
+  .cart-container {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 576px) {
+  .product-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .modal-container {
+    width: 95%;
+    margin: 10px;
+  }
+  
+  .toast {
+    width: 90%;
+    left: 5%;
+    right: 5%;
+  }
+}

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://sareestore.com/sitemap.xml
