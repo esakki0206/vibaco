@@ -171,7 +171,7 @@ const Checkout = () => {
   key: rpOrderData.key,
   amount: rpOrderData.amount,
   currency: rpOrderData.currency,
-  name: "Shri Sai Collections",
+  name: "Vibaco Gifts",
   description: `Order #${newOrder.orderNumber}`,
   order_id: rpOrderData.id,
 
@@ -190,7 +190,7 @@ const Checkout = () => {
     contact: shippingAddress.phone
   },
 
-  theme: { color: '#e11d48' },
+  theme: { color: '#7B2D3B' },
 
   handler: async function (response) {
     const loadingToast = toast.loading('Verifying payment...');

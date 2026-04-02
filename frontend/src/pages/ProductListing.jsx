@@ -10,13 +10,11 @@ const ProductListing = () => {
   const [searchParams, setSearchParams] = useSearchParams()
   const navigate = useNavigate()
 
-  // --- State ---
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(true)
-  const [viewMode, setViewMode] = useState('grid') // 'grid' | 'list'
+  const [viewMode, setViewMode] = useState('grid')
   const [showMobileFilters, setShowMobileFilters] = useState(false)
 
-  // Initial state derived from URL to support sharing/refreshing
   const [filters, setFilters] = useState({
     category: searchParams.get('category') || '',
     search: searchParams.get('search') || '',
@@ -28,13 +26,11 @@ const ProductListing = () => {
     sortBy: searchParams.get('sortBy') || 'newest'
   })
 
-  // Sync filters from URL when searchParams change externally (e.g. Navbar search)
   useEffect(() => {
     const urlSearch = searchParams.get('search') || ''
     const urlCategory = searchParams.get('category') || ''
 
     setFilters(prev => {
-      // Only update if the URL values differ from the current filter state
       if (prev.search !== urlSearch || prev.category !== urlCategory) {
         return {
           ...prev,
@@ -53,9 +49,6 @@ const ProductListing = () => {
     totalPages: 0
   })
 
-  // --- Synchronization ---
-
-  // Update URL when filters or page changes
   useEffect(() => {
     const params = {}
     if (filters.category) params.category = filters.category
@@ -71,7 +64,6 @@ const ProductListing = () => {
     setSearchParams(params, { replace: true })
   }, [filters, pagination.page, setSearchParams])
 
-  // --- Data Fetching ---
   const fetchProducts = useCallback(async () => {
     setLoading(true)
     try {
@@ -84,11 +76,10 @@ const ProductListing = () => {
         minPrice: filters.minPrice,
         maxPrice: filters.maxPrice,
         inStock: filters.inStock,
-        variantColors: filters.colors.join(','), // Send as comma separated string
+        variantColors: filters.colors.join(','),
         sizes: filters.sizes.join(',')
       }
 
-      // Clean empty params
       Object.keys(apiParams).forEach(key => {
         if (apiParams[key] === '' || apiParams[key] === null || apiParams[key] === undefined) {
           delete apiParams[key]
@@ -114,17 +105,14 @@ const ProductListing = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }, [fetchProducts])
 
-  // --- Handlers ---
-
   const handleFilterChange = (key, value) => {
     setFilters(prev => ({
       ...prev,
       [key]: value
     }))
-    setPagination(prev => ({ ...prev, page: 1 })) // Reset page on filter change
+    setPagination(prev => ({ ...prev, page: 1 }))
   }
 
-  // Specific handler for Array types (Colors, Sizes)
   const toggleArrayFilter = (key, value) => {
     setFilters(prev => {
       const current = prev[key]
@@ -163,29 +151,25 @@ const ProductListing = () => {
 
   return (
     <div className="listing-page">
-      {/* --- Sticky Header --- */}
+      {/* Sticky Header */}
       <div className="sticky-header">
         <div className="container">
           <div className="header-row">
 
-            {/* Title & Count */}
             <div className="header-info">
               <h1 className="page-title">
                 {filters.category
-                  ? `${filters.category.charAt(0).toUpperCase() + filters.category.slice(1)} Sarees`
+                  ? filters.category
                   : filters.search
                     ? `Results for "${filters.search}"`
-                    : 'Our Collection'}
+                    : 'Gift Collection'}
               </h1>
               <span className="product-count">
                 {loading ? 'Loading...' : `${pagination.total} Items`}
               </span>
             </div>
 
-            {/* Controls */}
             <div className="header-controls">
-
-              {/* Mobile Filter Toggle */}
               <button
                 className="control-btn mobile-filter-btn"
                 onClick={() => setShowMobileFilters(true)}
@@ -194,7 +178,6 @@ const ProductListing = () => {
                 {getActiveFilterCount() > 0 && <span className="badge">{getActiveFilterCount()}</span>}
               </button>
 
-              {/* View Toggle (Desktop) */}
               <div className="view-toggle">
                 <button
                   className={`view-btn ${viewMode === 'grid' ? 'active' : ''}`}
@@ -212,12 +195,11 @@ const ProductListing = () => {
             </div>
           </div>
 
-          {/* Active Tags Bar */}
           {getActiveFilterCount() > 0 && (
             <div className="active-tags-row">
               {filters.category && (
                 <div className="tag">
-                  {filters.category.charAt(0).toUpperCase() + filters.category.slice(1)} <FiX onClick={() => handleFilterChange('category', '')} />
+                  {filters.category} <FiX onClick={() => handleFilterChange('category', '')} />
                 </div>
               )}
               {filters.colors.map(color => (
@@ -228,7 +210,7 @@ const ProductListing = () => {
               ))}
               {(filters.minPrice || filters.maxPrice) && (
                 <div className="tag">
-                  ₹{filters.minPrice || 0} - ₹{filters.maxPrice || 'Any'}
+                  ${filters.minPrice || 0} - ${filters.maxPrice || 'Any'}
                   <FiX onClick={() => { handleFilterChange('minPrice', ''); handleFilterChange('maxPrice', '') }} />
                 </div>
               )}
@@ -244,7 +226,6 @@ const ProductListing = () => {
       </div>
 
       <div className="main-layout container">
-        {/* --- Sidebar (Desktop) --- */}
         <aside className="sidebar-desktop">
           <FilterSidebar
             filters={filters}
@@ -253,7 +234,6 @@ const ProductListing = () => {
           />
         </aside>
 
-        {/* --- Mobile Sidebar (Drawer) --- */}
         <AnimatePresence>
           {showMobileFilters && (
             <>
@@ -293,19 +273,18 @@ const ProductListing = () => {
           )}
         </AnimatePresence>
 
-        {/* --- Product Grid --- */}
         <main className="product-area">
           {loading ? (
             <div className="loader-area">
               <div className="spinner"></div>
-              <p>Curating collection...</p>
+              <p>Finding perfect gifts...</p>
             </div>
           ) : products.length === 0 ? (
             <div className="empty-state">
-              <div className="empty-icon">🔍</div>
-              <h3>No products found</h3>
+              <div className="empty-icon">🎁</div>
+              <h3>No gifts found</h3>
               <p>Try changing your filters or search for something else.</p>
-              <button onClick={clearAllFilters}>View All Products</button>
+              <button onClick={clearAllFilters}>View All Gifts</button>
             </div>
           ) : (
             <>
@@ -315,12 +294,11 @@ const ProductListing = () => {
                 ))}
               </div>
 
-              {/* Pagination */}
               <div className="pagination-container">
-                <Pagination 
-                  currentPage={pagination.page} 
-                  totalPages={pagination.totalPages} 
-                  onPageChange={(p) => setPagination(prev => ({ ...prev, page: p }))} 
+                <Pagination
+                  currentPage={pagination.page}
+                  totalPages={pagination.totalPages}
+                  onPageChange={(p) => setPagination(prev => ({ ...prev, page: p }))}
                 />
               </div>
             </>
@@ -330,11 +308,11 @@ const ProductListing = () => {
 
       <style>{`
         :root {
-          --primary: #e11d48; /* Rose-600 */
-          --bg-page: #f8fafc;
-          --border: #e2e8f0;
-          --text-main: #0f172a;
-          --text-muted: #64748b;
+          --primary: #7B2D3B;
+          --bg-page: #FEFAF3;
+          --border: #EBE5DE;
+          --text-main: #2C2C2C;
+          --text-muted: #8F7E6E;
         }
 
         .listing-page {
@@ -348,7 +326,6 @@ const ProductListing = () => {
           padding: 0 16px;
         }
 
-        /* --- Sticky Header --- */
         .sticky-header {
           background: white;
           position: sticky;
@@ -403,7 +380,7 @@ const ProductListing = () => {
         }
 
         .control-btn:hover { border-color: var(--text-muted); }
-        
+
         .badge {
           background: var(--primary);
           color: white;
@@ -419,11 +396,11 @@ const ProductListing = () => {
           right: -6px;
         }
 
-        .mobile-filter-btn { display: none; } /* Shown on mobile via query */
+        .mobile-filter-btn { display: none; }
 
         .view-toggle {
           display: flex;
-          background: #f1f5f9;
+          background: #F5F0EB;
           padding: 4px;
           border-radius: 8px;
         }
@@ -444,25 +421,13 @@ const ProductListing = () => {
           box-shadow: 0 1px 2px rgba(0,0,0,0.1);
         }
 
-        .sort-select {
-          padding: 8px 12px;
-          border: 1px solid var(--border);
-          border-radius: 8px;
-          background: white;
-          font-size: 0.875rem;
-          color: var(--text-main);
-          cursor: pointer;
-          outline: none;
-        }
-
-        /* Active Tags */
         .active-tags-row {
           display: flex;
           flex-wrap: wrap;
           gap: 8px;
           margin-top: 16px;
           padding-top: 12px;
-          border-top: 1px solid #f1f5f9;
+          border-top: 1px solid #F5F0EB;
         }
 
         .tag {
@@ -470,9 +435,9 @@ const ProductListing = () => {
           align-items: center;
           gap: 6px;
           padding: 4px 10px;
-          background: #fff1f2;
+          background: #fdf2f4;
           color: var(--primary);
-          border: 1px solid #fecdd3;
+          border: 1px solid #f9d0d9;
           border-radius: 20px;
           font-size: 0.8rem;
           font-weight: 500;
@@ -496,7 +461,6 @@ const ProductListing = () => {
           cursor: pointer;
         }
 
-        /* --- Main Layout --- */
         .main-layout {
           display: grid;
           grid-template-columns: 260px 1fr;
@@ -505,17 +469,15 @@ const ProductListing = () => {
           padding-bottom: 60px;
         }
 
-        /* Sidebar Desktop */
         .sidebar-desktop {
           position: sticky;
-          top: 140px; /* Adjust based on header height */
+          top: 140px;
           height: fit-content;
           max-height: calc(100vh - 160px);
           overflow-y: auto;
           padding-right: 8px;
         }
 
-        /* Sidebar Mobile Drawer */
         .backdrop {
           position: fixed;
           inset: 0;
@@ -577,7 +539,6 @@ const ProductListing = () => {
           font-weight: 600;
         }
 
-        /* --- Product Grid --- */
         .products-grid.grid {
           display: grid;
           grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
@@ -590,7 +551,6 @@ const ProductListing = () => {
           gap: 16px;
         }
 
-        /* Loader & Empty */
         .loader-area, .empty-state {
           min-height: 400px;
           display: flex;
@@ -603,7 +563,7 @@ const ProductListing = () => {
         .spinner {
           width: 40px;
           height: 40px;
-          border: 3px solid #f3f3f3;
+          border: 3px solid #EBE5DE;
           border-top: 3px solid var(--primary);
           border-radius: 50%;
           animation: spin 1s linear infinite;
@@ -624,7 +584,6 @@ const ProductListing = () => {
           cursor: pointer;
         }
 
-        /* --- Smart Pagination --- */
         .pagination-container {
           margin-top: 48px;
           padding-top: 24px;
@@ -666,7 +625,7 @@ const ProductListing = () => {
         .page-btn:hover:not(:disabled) {
           border-color: var(--primary);
           color: var(--primary);
-          background: #fff1f2;
+          background: #fdf2f4;
         }
 
         .page-btn.active {
@@ -678,7 +637,7 @@ const ProductListing = () => {
         .page-btn:disabled {
           opacity: 0.4;
           cursor: not-allowed;
-          background: #f8fafc;
+          background: #FAF9F7;
         }
 
         .page-dots {
@@ -688,7 +647,6 @@ const ProductListing = () => {
           user-select: none;
         }
 
-        /* --- Responsive Breakpoints --- */
         @media (max-width: 1024px) {
           .main-layout { grid-template-columns: 1fr; }
           .sidebar-desktop { display: none; }
@@ -696,15 +654,13 @@ const ProductListing = () => {
         }
 
         @media (max-width: 640px) {
-          .sticky-header { top: -1px; } /* Fix ios glitch */
+          .sticky-header { top: -1px; }
           .products-grid.grid {
             grid-template-columns: repeat(2, 1fr);
             gap: 12px;
           }
           .header-row { gap: 12px; }
           .header-controls { width: 100%; justify-content: space-between; }
-          .sort-wrapper { flex: 1; }
-          .sort-select { width: 100%; }
           .page-title { font-size: 1.25rem; }
         }
       `}</style>
@@ -712,48 +668,47 @@ const ProductListing = () => {
   )
 }
 
-// --- Smart Pagination Component ---
 const Pagination = ({ currentPage, totalPages, onPageChange }) => {
   if (totalPages <= 1) return null;
 
   const getPageNumbers = () => {
     if (totalPages <= 5) return Array.from({ length: totalPages }, (_, i) => i + 1);
     const pages = [1];
-    if (currentPage > 3) pages.push('…');
+    if (currentPage > 3) pages.push('...');
     const start = Math.max(2, currentPage - 1);
     const end = Math.min(totalPages - 1, currentPage + 1);
     for (let i = start; i <= end; i++) pages.push(i);
-    if (currentPage < totalPages - 2) pages.push('…');
+    if (currentPage < totalPages - 2) pages.push('...');
     pages.push(totalPages);
     return pages;
   };
 
   return (
     <div className="smart-pagination">
-      <button 
-        onClick={() => onPageChange(1)} 
-        disabled={currentPage === 1} 
-        className="page-btn nav-btn" 
+      <button
+        onClick={() => onPageChange(1)}
+        disabled={currentPage === 1}
+        className="page-btn nav-btn"
         title="First page"
       >
         <FiChevronsLeft size={16} />
       </button>
-      <button 
-        onClick={() => onPageChange(currentPage - 1)} 
-        disabled={currentPage === 1} 
-        className="page-btn nav-btn" 
+      <button
+        onClick={() => onPageChange(currentPage - 1)}
+        disabled={currentPage === 1}
+        className="page-btn nav-btn"
         title="Previous page"
       >
         <FiChevronLeft size={16} />
       </button>
 
       {getPageNumbers().map((p, idx) =>
-        p === '…' ? (
-          <span key={`e${idx}`} className="page-dots">…</span>
+        p === '...' ? (
+          <span key={`e${idx}`} className="page-dots">...</span>
         ) : (
-          <button 
-            key={p} 
-            onClick={() => onPageChange(p)} 
+          <button
+            key={p}
+            onClick={() => onPageChange(p)}
             className={`page-btn ${p === currentPage ? 'active' : ''}`}
           >
             {p}
@@ -761,18 +716,18 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
         )
       )}
 
-      <button 
-        onClick={() => onPageChange(currentPage + 1)} 
-        disabled={currentPage === totalPages} 
-        className="page-btn nav-btn" 
+      <button
+        onClick={() => onPageChange(currentPage + 1)}
+        disabled={currentPage === totalPages}
+        className="page-btn nav-btn"
         title="Next page"
       >
         <FiChevronRight size={16} />
       </button>
-      <button 
-        onClick={() => onPageChange(totalPages)} 
-        disabled={currentPage === totalPages} 
-        className="page-btn nav-btn" 
+      <button
+        onClick={() => onPageChange(totalPages)}
+        disabled={currentPage === totalPages}
+        className="page-btn nav-btn"
         title="Last page"
       >
         <FiChevronsRight size={16} />

@@ -37,7 +37,7 @@ import AdminCouponManager from './admin/AdminCouponManager';
 import AdminResellers from './admin/AdminResellers';
 
 function App() {
-  const appName = import.meta.env.VITE_APP_NAME || 'Sri Sai Saree';
+  const appName = import.meta.env.VITE_APP_NAME || 'Vibaco Gifts';
 
   return (
     <ErrorBoundary>

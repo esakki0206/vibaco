@@ -8,23 +8,25 @@ export const API_ENDPOINTS = {
 };
 
 export const PRODUCT_CATEGORIES = [
-  'Silk Sarees',
-  'Cotton Sarees',
-  'Designer Sarees',
-  'Bridal Sarees',
-  'Daily Wear Sarees',
-  'Handloom Sarees'
+  'Birthday Gifts',
+  'Anniversary Gifts',
+  'Wedding Gifts',
+  'Personalized Gifts',
+  'Kids Gifts',
+  'Luxury Gifts',
+  'Gift Hampers',
+  'Festival Gifts'
 ];
 
-export const OCCASIONS = ['Wedding', 'Festival', 'Party', 'Casual', 'Traditional'];
+export const OCCASIONS = ['Birthday', 'Anniversary', 'Wedding', 'Festival', 'Corporate'];
 
 export const FABRICS = ['Silk', 'Cotton', 'Chiffon', 'Georgette', 'Handloom'];
 
 export const PRICE_RANGES = [
-  { label: 'Under ₹5,000', min: 0, max: 5000 },
-  { label: '₹5,000 - ₹10,000', min: 5000, max: 10000 },
-  { label: '₹10,000 - ₹20,000', min: 10000, max: 20000 },
-  { label: '₹20,000+', min: 20000, max: Infinity }
+  { label: 'Under $5,000', min: 0, max: 5000 },
+  { label: '$5,000 - $10,000', min: 5000, max: 10000 },
+  { label: '$10,000 - $20,000', min: 10000, max: 20000 },
+  { label: '$20,000+', min: 20000, max: Infinity }
 ];
 
 export const PAYMENT_METHODS = {
